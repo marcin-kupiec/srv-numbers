@@ -1,0 +1,55 @@
+swagger: "2.0"
+schemes:
+ - http
+
+info:
+  version: 1.0.0
+  title: srv-numbers
+
+paths:
+  /docs/api/swagger.yaml:
+    get:
+      description: Returns specification of OpenAPI specification in YAML format
+      produces:
+       - application/yaml
+      responses:
+        200:
+          description: OpenAPI specification in YAML format
+
+  /endpoint/{number}:
+    get:
+      description: Get an index of the number
+      produces:
+        - application/json
+      parameters:
+        - name: number
+          in: path
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Return index
+          schema:
+            $ref: "#/definitions/GetNumberResponse"
+        400:
+          description: Invalid request
+        500:
+          description: Internal error
+
+definitions:
+  GetNumberResponse:
+    type: object
+    required:
+      - id
+      - value
+    properties:
+      id:
+        type: integer
+      value:
+        type: integer
+      errorMessage:
+        type: string
+    example:
+      id: 123
+      value: 548
+      errorMessage: ""
