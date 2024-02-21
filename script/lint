@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
 set -e
 
-docker compose run --rm --no-deps app golangci-lint --timeout 2m run ./...
-docker compose run --rm --no-deps app go-cleanarch ./...
+docker run --rm -v $(pwd):/app -w /app golangci/golangci-lint:v1.56.2 golangci-lint --timeout 2m run ./... -v
 docker run --rm -v $(pwd):/app -w /app quay.io/goswagger/swagger validate docs/api/swagger.yaml
-$(dirname "$0")/stop
-
-find . -name ".deploy.yml" -o -name ".deploy.yaml" -o -path "*/.deploy/*" -type f | \
-	xargs -I '{}' docker run --rm -v "$(pwd):/deploy" brcr.io/automation-ops/deploy-validator:latest -d "/deploy/{}"

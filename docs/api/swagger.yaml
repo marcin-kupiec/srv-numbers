@@ -33,10 +33,24 @@ paths:
             $ref: "#/definitions/GetNumberResponse"
         400:
           description: Invalid request
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: Number not found
+          schema:
+            $ref: "#/definitions/Error"
         500:
           description: Internal error
+          schema:
+            $ref: "#/definitions/Error"
 
 definitions:
+  Error:
+    type: object
+    properties:
+      message:
+        type: string
+
   GetNumberResponse:
     type: object
     required:
@@ -47,9 +61,6 @@ definitions:
         type: integer
       value:
         type: integer
-      errorMessage:
-        type: string
     example:
       id: 123
       value: 548
-      errorMessage: ""

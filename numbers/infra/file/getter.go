@@ -7,7 +7,7 @@ type Storage struct {
 }
 
 func NewStorage() *Storage {
-	return &Storage{Numbers: []int64{5, 3, 6, 8, 9, 4, 6, 7, 8, 2, 7, 5, 8, 4}}
+	return &Storage{Numbers: []int64{0, 1, 5, 18, 24, 56, 78, 129, 329, 4359, 438593, 567893, 654837, 768492, 849576, 928372, 989311}}
 }
 
 func (s Storage) GetAll(ctx context.Context) ([]int64, error) {

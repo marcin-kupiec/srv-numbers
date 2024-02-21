@@ -10,15 +10,10 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
 
-	"numbers/numbers"
-	adapterHTTP "numbers/numbers/adapter/http"
-	infraFile "numbers/numbers/infra/file"
+	"github.com/marcin-kupiec/srv-numbers/numbers"
+	adapterHTTP "github.com/marcin-kupiec/srv-numbers/numbers/adapter/http"
+	infraFile "github.com/marcin-kupiec/srv-numbers/numbers/infra/file"
 )
-
-var ErrServicePortEmpty = fmt.Errorf("SERVICE_PORT must be provided")
-var ErrServicePortInvalid = fmt.Errorf("SERVICE_PORT invalid")
-var ErrLogLevelEmpty = fmt.Errorf("SERVICE_LOGLEVEL must be provided")
-var ErrLogLevelInvalid = fmt.Errorf("SERVICE_LOGLEVEL invalid")
 
 func main() {
 	e := echo.New()
@@ -33,13 +28,19 @@ func main() {
 		e.Logger.Fatal(err)
 	}
 
+	e.Use(middleware.CORS())
+	e.Use(middleware.Recover())
+	e.Logger.SetLevel(logLevel)
+	e.HTTPErrorHandler = adapterHTTP.HandleError
+
+	// init dependencies
 	numbersStorage := infraFile.NewStorage()
-	numbersGetterService := numbers.NewGetter(numbersStorage)
-	numbersGetterHandler := adapterHTTP.NewGetter(numbersGetterService)
+	numbersGetterService := numbers.NewService(numbersStorage)
+	numbersGetterHandler := adapterHTTP.NewGetHandler(numbersGetterService)
+
+	// setup routes
 	adapterHTTP.SetRoutes(e, numbersGetterHandler)
 
-	e.Use(middleware.CORS())
-	e.Logger.SetLevel(logLevel)
 	e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", port)))
 }
 
@@ -47,11 +48,11 @@ func getPort() (int, error) {
 	var port int
 	portEnv := os.Getenv("SERVICE_PORT")
 	if portEnv == "" {
-		return 0, ErrServicePortEmpty
+		return 0, fmt.Errorf("SERVICE_PORT must be provided")
 	}
 	port, err := strconv.Atoi(portEnv)
 	if err != nil {
-		return 0, fmt.Errorf("%w - %w", ErrServicePortInvalid, err)
+		return 0, fmt.Errorf("SERVICE_PORT invalid - %w", err)
 	}
 
 	return port, nil
@@ -60,7 +61,7 @@ func getPort() (int, error) {
 func getLogLevel() (log.Lvl, error) {
 	logLevel := os.Getenv("SERVICE_LOGLEVEL")
 	if logLevel == "" {
-		return 0, ErrLogLevelEmpty
+		return 0, fmt.Errorf("SERVICE_LOGLEVEL must be provided")
 	}
 
 	switch strings.ToLower(logLevel) {
@@ -72,5 +73,5 @@ func getLogLevel() (log.Lvl, error) {
 		return log.ERROR, nil
 	}
 
-	return 0, fmt.Errorf("%w - %s", ErrLogLevelInvalid, logLevel)
+	return 0, fmt.Errorf("SERVICE_LOGLEVEL invalid - %s", logLevel)
 }

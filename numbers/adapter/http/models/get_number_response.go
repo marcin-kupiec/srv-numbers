@@ -15,13 +15,10 @@ import (
 )
 
 // GetNumberResponse get number response
-// Example: {"errorMessage":"","id":123,"value":548}
+// Example: {"id":123,"value":548}
 //
 // swagger:model GetNumberResponse
 type GetNumberResponse struct {
-
-	// error message
-	ErrorMessage string `json:"errorMessage,omitempty"`
 
 	// id
 	// Required: true
