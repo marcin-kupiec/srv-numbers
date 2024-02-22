@@ -28,15 +28,19 @@ func main() {
 		e.Logger.Fatal(err)
 	}
 
+	// init dependencies
+	numbersStorage := infraFile.NewStorage(os.ReadFile)
+	err = numbersStorage.Init()
+	if err != nil {
+		e.Logger.Fatal(err)
+	}
+	numbersGetterService := numbers.NewService(numbersStorage)
+	numbersGetterHandler := adapterHTTP.NewGetHandler(numbersGetterService)
+
 	e.Use(middleware.CORS())
 	e.Use(middleware.Recover())
 	e.Logger.SetLevel(logLevel)
 	e.HTTPErrorHandler = adapterHTTP.HandleError
-
-	// init dependencies
-	numbersStorage := infraFile.NewStorage()
-	numbersGetterService := numbers.NewService(numbersStorage)
-	numbersGetterHandler := adapterHTTP.NewGetHandler(numbersGetterService)
 
 	// setup routes
 	adapterHTTP.SetRoutes(e, numbersGetterHandler)
