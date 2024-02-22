@@ -21,7 +21,7 @@ func TestGetHandler(t *testing.T) {
 
 	t.Run("should handle get request and return 200", func(t *testing.T) {
 		numbersSvc := &numbersServiceMock{
-			GetFunc: func(ctx context.Context, number int64) (int64, int64, error) {
+			GetFunc: func(context.Context, int64) (int64, int64, error) {
 				return 4, 123, nil
 			},
 		}
@@ -53,7 +53,7 @@ func TestGetHandler(t *testing.T) {
 
 	t.Run("should get 404 code for number not found", func(t *testing.T) {
 		numbersSvc := &numbersServiceMock{
-			GetFunc: func(ctx context.Context, number int64) (int64, int64, error) {
+			GetFunc: func(context.Context, int64) (int64, int64, error) {
 				return 0, 0, numbers.ErrNumberNotFound
 			},
 		}
@@ -72,7 +72,7 @@ func TestGetHandler(t *testing.T) {
 
 	t.Run("should get 500 code for internal server error", func(t *testing.T) {
 		numbersSvc := &numbersServiceMock{
-			GetFunc: func(ctx context.Context, number int64) (int64, int64, error) {
+			GetFunc: func(context.Context, int64) (int64, int64, error) {
 				return 0, 0, assert.AnError
 			},
 		}

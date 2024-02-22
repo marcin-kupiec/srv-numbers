@@ -30,7 +30,7 @@ func TestNewStorage(t *testing.T) {
 	})
 
 	t.Run("should read and parse input file with only one number", func(t *testing.T) {
-		fReader := func(fName string) ([]byte, error) {
+		fReader := func(string) ([]byte, error) {
 			return bytes.NewBufferString("Value: 0\nIndex: 0").Bytes(), nil
 		}
 		expectedNumbers := []int64{0}
@@ -46,7 +46,7 @@ func TestNewStorage(t *testing.T) {
 	})
 
 	t.Run("should return error on reading file error", func(t *testing.T) {
-		fReader := func(fName string) ([]byte, error) {
+		fReader := func(string) ([]byte, error) {
 			return nil, assert.AnError
 		}
 
@@ -57,7 +57,7 @@ func TestNewStorage(t *testing.T) {
 	})
 
 	t.Run("should return error when file is empty", func(t *testing.T) {
-		fReader := func(fName string) ([]byte, error) {
+		fReader := func(string) ([]byte, error) {
 			return bytes.NewBufferString("").Bytes(), nil
 		}
 
@@ -68,7 +68,7 @@ func TestNewStorage(t *testing.T) {
 	})
 
 	t.Run("should return error when file has no numbers", func(t *testing.T) {
-		fReader := func(fName string) ([]byte, error) {
+		fReader := func(string) ([]byte, error) {
 			return bytes.NewBufferString("Value:\nIndex:").Bytes(), nil
 		}
 
@@ -79,7 +79,7 @@ func TestNewStorage(t *testing.T) {
 	})
 
 	t.Run("should return parsing error when file has malformed number", func(t *testing.T) {
-		fReader := func(fName string) ([]byte, error) {
+		fReader := func(string) ([]byte, error) {
 			return bytes.NewBufferString("Value: 1 5 a 5\nIndex:").Bytes(), nil
 		}
 

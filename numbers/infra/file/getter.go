@@ -51,6 +51,6 @@ func (s *Storage) Init() error {
 	return nil
 }
 
-func (s *Storage) GetAll(ctx context.Context) ([]int64, error) {
+func (s *Storage) GetAll(_ context.Context) ([]int64, error) {
 	return s.numbers, nil
 }

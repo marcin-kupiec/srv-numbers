@@ -71,7 +71,7 @@ func TestService(t *testing.T) {
 	for _, uc := range useCases {
 		t.Run(uc.name, func(t *testing.T) {
 			repo := &numbersRepoMock{
-				GetAllFunc: func(ctx context.Context) ([]int64, error) {
+				GetAllFunc: func(context.Context) ([]int64, error) {
 					return uc.numbers, nil
 				},
 			}
@@ -88,7 +88,7 @@ func TestService(t *testing.T) {
 
 	t.Run("should return error on getting all numbers error", func(t *testing.T) {
 		repo := &numbersRepoMock{
-			GetAllFunc: func(ctx context.Context) ([]int64, error) {
+			GetAllFunc: func(context.Context) ([]int64, error) {
 				return nil, assert.AnError
 			},
 		}
