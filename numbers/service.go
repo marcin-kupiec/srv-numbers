@@ -33,31 +33,47 @@ func (s Service) Get(ctx context.Context, number int64) (int64, int64, error) {
 		return 0, 0, fmt.Errorf("failed to get all numbers: %w", err)
 	}
 
+	return s.search(number, numbers)
+}
+
+func (s Service) search(number int64, numbers []int64) (int64, int64, error) {
 	delta := int64(math.Floor(conformationCoeff * float64(number)))
 	min := number - delta
 	max := number + delta
 
-	notExactID := -1
+	notExactID := int64(-1)
 	notExactValue := int64(-1)
 
-	for id, n := range numbers {
-		if n > max {
-			break
+	start := int64(0)
+	end := int64(len(numbers) - 1)
+
+	for start <= end {
+		middleID := int64(math.Floor(float64(start+end) / 2))
+		middleValue := numbers[middleID]
+
+		// return id and value if found
+		if middleValue == number {
+			return middleID, middleValue, nil
 		}
-		if n == number {
-			return int64(id), n, nil
+
+		// save value within the range in case no exact matching number in the slice
+		if middleValue >= min && middleValue <= max {
+			notExactID = middleID
+			notExactValue = middleValue
 		}
-		if n > number && notExactID != -1 {
-			return int64(notExactID), notExactValue, nil
-		}
-		if n >= min && n <= max {
-			notExactID = id
-			notExactValue = n
+
+		// continue in left or right half
+		if middleValue < number {
+			start = middleID + 1
+		} else {
+			end = middleID - 1
 		}
 	}
 
+	// no exact match, so check if there is anything within the range
 	if notExactID != -1 {
-		return int64(notExactID), notExactValue, nil
+		return notExactID, notExactValue, nil
 	}
-	return int64(0), int64(0), ErrNumberNotFound
+
+	return 0, 0, ErrNumberNotFound
 }
