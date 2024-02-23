@@ -45,6 +45,8 @@ func main() {
 	// setup routes
 	adapterHTTP.SetRoutes(e, numbersGetterHandler)
 
+	e.Static("/", "./frontend")
+
 	e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", port)))
 }
 
