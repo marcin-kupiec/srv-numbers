@@ -7,15 +7,6 @@ info:
   title: srv-numbers
 
 paths:
-  /docs/api/swagger.yaml:
-    get:
-      description: Returns specification of OpenAPI specification in YAML format
-      produces:
-       - application/yaml
-      responses:
-        200:
-          description: OpenAPI specification in YAML format
-
   /endpoint/{number}:
     get:
       description: Get an index of the number
